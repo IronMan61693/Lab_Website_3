@@ -1,0 +1,58 @@
+<% include ../partials/header %>
+<% include ../partials/menu %>
+	<div class="container">
+		<br>
+		<div class="jumbotron">
+		  <h1 class="display-4">Fall 2018 Stats</h1>
+		  <p class="lead">Detailed information on how the Buffs are doing in the 2018 Football Season!</p>
+		</div>
+		
+		<table class="table table-bordered" id="stats_table">
+			<tr>
+				<th class="align-bottom" rowspan="2">Game Date</th>
+				<th class="align-bottom"rowspan="2">Opposing Team Name</th>
+				<th class="text-center" colspan="2">Score</th>
+				<th class="align-bottom" rowspan="2">Winner</th>
+			</tr>
+			<tr>
+				<th>Home Score</th>
+				<th>Opp. Score</th>
+			</tr>
+
+			<% if (data) { %>
+					<% var row = '';
+					   var teamIndex = 0;
+
+					data.forEach(function(item){
+						 row += '<tr>' + '<td>' + item.game_date + '</td> <td> ' + item.visitor_name + '</td> <td>' + item.home_score + '</td> <td>' + item.visitor_score +'</td> <td>'+ win_team[teamIndex] +'</td></tr>';
+						 teamIndex = teamIndex + 1;
+							
+					 }); %>
+					 <%- row %> 
+			<% } %>
+
+			
+			
+		
+			
+		</table>
+		<br>
+		<table class="table text-center">
+			<tr>
+				<th>Wins</th>
+				<th>Losses</th>
+			</tr>
+			<tr>
+				<% if (win_to_loss) { %>
+					<% var win_row = '';
+
+						win_row += '<td> ' + win_to_loss[0] + '</td> <td> ' + win_to_loss[1] + '</td> ';
+							
+					 %>
+					 <%- win_row %> 
+				<% } %>
+			</tr>
+		</table>
+		
+	</div>
+<% include ../partials/footer %>

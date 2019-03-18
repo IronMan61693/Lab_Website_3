@@ -1,0 +1,113 @@
+server.js
+
+
+app.get('/home', function(req, res) {
+  var query = 'select * from favorite_colors;';
+  db.any(query)
+		.then(function (rows) {
+			res.render('pages/home',{
+		my_title: "Home Page",
+		data: rows,
+		color: '',
+		color_msg: ''
+	  })
+
+		})
+		.catch(function (err) {
+			// display error message in case an error
+			request.flash('error', err);
+			response.render('pages/home', {
+				title: 'Home Page',
+				data: '',
+				color: '',
+				color_msg: ''
+			})
+		})
+});
+
+app.get('/team_stats', function(req, res) {
+  var cu_wins = 0;
+  var cu_loss = 0;
+  var game_stats =  'select game_date, visitor_name, home_score, visitor_score from football_games;';
+  db.task('get-everything', task => {
+		return task.batch([
+			task.any(game_stats)
+		]);
+	})
+	.then(info => {
+	  res.render('pages/team_stats',{
+		my_title: "2018 Season Stats",
+		data: info[0]
+	
+	  })
+	})
+	.catch(error => {
+		// display error message in case an error
+			request.flash('error', err);
+			response.render('pages/team_stats', {
+				title: '2018 Season Stats',
+				data: ''
+				
+			})
+	})
+  
+});
+
+
+
+
+
+
+
+
+
+
+
+team_stats.ejs
+
+<form action="/team_stats" method="get">
+				<% 
+					if (data) { 
+						var row = '';
+
+						data.forEach(function(item){
+							 row += '<tr>' + '<td>' + item.game_date + '</td> <td> ' item.visitor_name + '</td> <td>' + item.home_score
+							 	 + '</td> <td>' + item.visitor_score +'</td> <td></td></tr>';
+								
+						 }); %>
+						 <%- row %> 
+					<% } %>
+			</form>
+
+<form action="/team_stats" method="get">
+				<% 
+					if (data) { 
+						var row = '';
+
+						data.forEach(function(item){
+							 row += '<tr>' + '<td> 1' '</td> </tr>';
+								
+						 }); %>
+						 <%- row %> 
+					<% } %>
+			</form>
+
+home.ejs
+<form action="/home/pick_color" method="get">
+						<!-- TODO: Second EJS Update -->
+						<% 
+						if (data) { 
+							var buttons = '';
+
+							data.forEach(function(item){
+								 buttons += '<button type="submit" name="color_selection" class="btn btn-block" style="background-color:#' + item.hex_value + '" value="' + item.hex_value + '">';
+									 if(item.name){ 
+									   buttons += item.name + '</button>'; 
+									 } 
+									 else{ 
+										 buttons += item.hex_value + '</button>';
+									 } 
+							 }); %>
+							 <%- buttons %> 
+						<% } %>
+				  </form>
